@@ -1,0 +1,13 @@
+
+.SideBar {
+    max-width: 30%;
+    min-width: 20%;
+  }
+  
+  .Window {
+    display: flex;
+  }
+  
+  .Canvas {
+    max-width: 70%;
+  }
