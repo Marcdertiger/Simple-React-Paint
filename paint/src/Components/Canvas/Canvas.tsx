@@ -1,14 +1,12 @@
 import React from 'react';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 
 class Canvas extends React.Component<CanvasProps> {
 
   state = {
     renderingCycles: 0
   }
-  itemClicked = (item: any) => {
-    this.props.CanvasCallback(item)
+  itemClicked = (x: number, y: number) => {
+    this.props.CanvasCallback(x, y)
   }
 
 	componentWillReceiveProps(newProps: any) {
@@ -17,18 +15,22 @@ class Canvas extends React.Component<CanvasProps> {
   }
 
   render() {
-    
+
+    const {list} = this.props
+
+   
     return (
       <div  style={{display: 'flex', justifyContent:'center', padding: '30px'}}>
-       <GridList cols={this.props.size} cellHeight={20} >
-          {this.props.list.map((item:any) =>(
-            <GridListTile key={item.index}>
-              <div style={{backgroundColor: item.color, display: 'flex'}} onClick={()=>this.itemClicked(item)}>
-                <br />
-              </div>
-            </GridListTile>
-      ))}
-      </GridList>
+       {list.map((row: any, i: number)=>(
+            <div key={i}>
+              {row.map((item: any, j: number)=>(
+                <div style={{backgroundColor: item.color, display: 'flex', width: 40, height: 40, margin: 10}} onClick={()=>this.itemClicked(i,j)}>
+                  <br />
+                </div>
+              ))}
+            </div>
+          ))
+        }
     </div>
     );
   }
@@ -39,7 +41,7 @@ interface CanvasProps {
   list: any,
   size: number,
   color: any,
-  CanvasCallback: (item: any) => any
+  CanvasCallback: (x: number, y: number) => any
 }
 
 export default Canvas;

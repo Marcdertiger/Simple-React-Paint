@@ -10,7 +10,7 @@ import {FillAlgo} from './Utils/Fill'
 class Pixelator extends React.Component<PixelatorProps> {
   state = {
     selected: 0,
-    list: [] as any,
+    newList: [] as any,
     size: 5,
     color: '#000000' as any,
     initColor: '#eeaaee'
@@ -31,29 +31,23 @@ class Pixelator extends React.Component<PixelatorProps> {
       console.log(color, typeof(color))
       this.setState({color:color})
   }
-  CanvasCallback = (item: any) => {
-    console.log(item)
-    if(this.state.selected === 0) { //pencil
-        let list = this.state.list
+  CanvasCallback = (x: number, y: number) => {
 
-        list[item.index].color = this.state.color
-        this.setState({list: list})
-        console.log(this.state.color, this.state.list)
+    if(this.state.selected === 0) { //pencil
+
+        let newList = this.state.newList
+        newList[x][y].color = this.state.color
+        this.setState({newList: newList})
     }
+    
     else if(this.state.selected === 1){//fill
-        let list = this.state.list
+       
+        let newList = this.state.newList
 
         // Call FillAlgo function, will return all connected items
-        let result = FillAlgo(this.state.list, item, this.state.size)
-
-        console.log('FILL RESULT', result, result[0].color)
-        //Change each item's color
-
-        result.forEach(element => {
-            list[element.index].color = this.state.color
-        });
-        
-        this.setState({list: list})
+        let result = FillAlgo(x, y, newList, this.state.color, newList[x][y].color)
+  
+        this.setState({newList: result})
     }
 
   }
@@ -65,32 +59,25 @@ class Pixelator extends React.Component<PixelatorProps> {
   createList = () => {
     const {size, initColor} = this.state
 
-    let width = size
-    let height = size
-    let arr = []
-    let widthCount = 1
-    let heightCount = 1
-    let index = 0
+    let arra = []
 
-    while(widthCount <= width){
-      while(heightCount <= height){
-        let x = {color: initColor, x: widthCount, y: heightCount, index}
-        arr.push(x)
-        heightCount = heightCount + 1
-        index = index + 1
-      }
-      widthCount = widthCount + 1
-      heightCount = 1
+    for(var i = 0; i<size; i++){
+        arra[i] = new Array(size)
     }
-   
-   console.log(arr)
-   this.setState({list: arr})
+
+    for(var i = 0; i < size; i++){
+        for(var j = 0; j< size; j++){
+            arra[i][j] = {color: initColor}
+        }
+    }
+
+    this.setState({newList: arra})
 
   }
 
   render() {
 
-    const {selected, list, size, color} = this.state
+    const {selected, newList, size, color} = this.state
     return (
         <div className="Window">
 
@@ -102,9 +89,9 @@ class Pixelator extends React.Component<PixelatorProps> {
                 </Paper>
             </div>
 
-       <div className="Canvas">
-        <Canvas CanvasCallback={this.CanvasCallback} selected={selected} list={list} size={size} color={color} />
-      </div>
+             <div className="Canvas">
+                 <Canvas CanvasCallback={this.CanvasCallback} selected={selected} list={newList} size={size} color={color} />
+            </div>
       </div>
     );
   }
