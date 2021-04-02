@@ -1,4 +1,4 @@
-# Canimmunize-Paint
+# Simple-React-Paint
 
 A short coding challenge. 
 
